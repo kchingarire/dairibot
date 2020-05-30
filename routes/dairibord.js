@@ -185,10 +185,18 @@ router.post('/', function (req, res) {
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
+                    if(responseText.msg){
                         res.send( [{
                             "text": responseText.msg,
                             "type": "message"
                         }])
+                    }else{
+                        res.send( [{
+                            "text": 'Sorry... there is no information yet on this',
+                            "type": "message"
+                        }])
+                    }
+                        
                 }
                 finalResponse(data);
 
