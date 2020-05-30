@@ -186,11 +186,20 @@ router.post('/', function (req, res) {
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
                     if(typeof responseText != 'undefined'){
-                        res.send( [{
-                            "text": responseText.msg,
-                            "type": "message"
-                        }])
+                        if(typeof responseText.msg!='undefined'){
+                            res.send( [{
+                                "text": responseText.msg,
+                                "type": "message"
+                            }])
+                        }else{
+                            res.send( [{
+                                "text": responseText,
+                                "type": "message"
+                            }])
+                        }
+                        
                     }else{
+                        
                         res.send( [{
                             "text": 'Sorry... there is no information yet on this',
                             "type": "message"
