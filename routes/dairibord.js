@@ -84,6 +84,16 @@ router.post('/', function (req, res) {
             if (data.user!=appPhoneNumber && data.user!='status@broadcast') {
                 //1. Check if first message
 
+                const checkMyResponse = async function(txt){
+                    if (typeof(txt)==='string'){
+                        if (txt){
+                            if (txt.indexOf('Still getting data on this') > 0) {
+                                var msg = await getMenuText('A',message);
+                                finalResponse(msg);         
+                            }
+                        }
+                    }
+                }
               
 
                 const sendInitialMessage = async function(message){
@@ -118,16 +128,7 @@ router.post('/', function (req, res) {
                     finalResponse(txt);
                 }
 
-                const checkMyResponse = async function(txt){
-                    if (typeof(txt)==='string'){
-                        if (txt){
-                            if (txt.indexOf('Still getting data on this') > 0) {
-                                var msg = await getMenuText('A',message);
-                                finalResponse(msg);         
-                            }
-                        }
-                    }
-                }
+               
                 
             }
       
