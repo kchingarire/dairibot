@@ -3,7 +3,6 @@ const router = express.Router();
 
 var request = require('request');
 var url1 = 'https//localhost:3000';
-//var url2 = 'https://eu12.chat-api.com/instance23791/message?token=dslps5coz9wf8zvq';
 var url2 = 'https://localhost:3000';
 
 var appPhoneNumber = '263788108777@c.us';
@@ -76,6 +75,8 @@ router.post('/', function (req, res) {
             if (data.user!=appPhoneNumber && data.user!='status@broadcast') {
                 //1. Check if first message
 
+              
+
                 const sendInitialMessage = async function(message){
                     var txt = await getMenuText('A',message);
                     res.send( [{
@@ -93,6 +94,31 @@ router.post('/', function (req, res) {
                         }])
                 }
                 finalResponse(data);
+
+                const askForName = async function(message){
+                    data =  await Menu.find({stage: 'ASK'});
+                   //console.log('menu',data);
+                   var txt = '';
+                   if (data){
+                       if (data.length>0){
+                         data.forEach((item)=>{
+                            txt += item.itemName + '\n';
+                         })
+                       }
+                    }
+                    finalResponse(txt);
+                }
+
+                const checkMyResponse = async function(txt){
+                    if (typeof(txt)==='string'){
+                        if (txt){
+                            if (txt.indexOf('Still getting data on this') > 0) {
+                                var msg = await getMenuText('A',message);
+                                finalResponse(msg);         
+                            }
+                        }
+                    }
+                }
                 
             }
       
@@ -101,19 +127,7 @@ router.post('/', function (req, res) {
 });
 
 
-const askForName = async function(message){
-    data =  await Menu.find({stage: 'ASK'});
-   //console.log('menu',data);
-   var txt = '';
-   if (data){
-       if (data.length>0){
-         data.forEach((item)=>{
-            txt += item.itemName + '\n';
-         })
-       }
-    }
-    sendMessage(message, txt, 'ASK');
-}
+
 
 const getSalutation = async function(message){
     name = await getContactName(message);
@@ -147,7 +161,6 @@ const  analyseResponse = async function(message, func){
         
         var txt1 = await getMenuText('A',message);
         txt += txt1;
-        //sendMessage(message, txt, 'A');
         return txt;
     }
     if (isGreeting(message.text) == true) {
@@ -193,12 +206,10 @@ const  analyseResponse = async function(message, func){
             // 2. search for the response in the content
                 var msg = await getContentFromText(message);
                 if ( msg != '') {
-                    //sendMessage(message, msg);
                     checkMyResponse(msg);
                 } else {
                     //invalid response therefore, present first menu
                     var msg = await getMenuText('A',message);
-                    //sendMessage(message, msg, 'A');
                 }
             }
         }
@@ -206,16 +217,7 @@ const  analyseResponse = async function(message, func){
     return txt;
 }
 
-const checkMyResponse = async function(txt){
-    if (typeof(txt)==='string'){
-        if (txt){
-            if (txt.indexOf('Still getting data on this') > 0) {
-                var msg = await getMenuText('A',message);
-                sendMessage(message, msg, 'A');         
-            }
-        }
-    }
-}
+
 
 function isGreeting(txt){
     //remove special characters
@@ -626,43 +628,6 @@ const getContentFromText = async function(message){
 
 
 
-
-const sendMessage = async function(originalMessage,msg,stage) {
-    console.log('final message:',msg);
-    if ((!msg)||(msg == '')) return;
-    var uri=url2;
-    var data={};
-    if (msg.type === 'text'){
-        //console.log('This is a string');
-        data = {
-            phone: originalMessage.user, // Receivers phone
-            text: msg,
-            type:"message"
-        }; 
-    } else if (msg.type === 'object'){
-        console.log('This is an object');
-        data = {
-            phone: originalMessage.user, // Receivers phone
-            text: msg.msg,
-            type:"message"
-        };
-
-       
-        if(msg.img!=""){
-            uri=url1;
-            data = {
-                phone: originalMessage.user, // Receivers phone
-                text: msg.img,
-                filename:"image.jpg",
-                caption:msg.msg
-            }
-        }
-    }
-    
-
-
-    return data;
-};
 
 const  getLastStage=async function(message){
     var phoneNumber = getPhoneNumber(message);
