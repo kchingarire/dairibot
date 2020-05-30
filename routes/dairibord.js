@@ -66,9 +66,18 @@ router.post('/', function (req, res) {
     var data = req.body; // New messages in the "body" variable
     //console.log(data);
     //for (var i = 0; i < data.messages.length; i++) { // For each message
+    var time = new Date().getTime() / 1000;
     if (data){
             console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
-            Messages.create(data, function (err, data){
+            var m={
+                type:data.type,
+                author:data.user,
+                body:data.text,
+                fromMe:false,
+                chatId:data.user,
+                time:time
+            }
+            Messages.create(m, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );

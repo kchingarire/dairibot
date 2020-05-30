@@ -6,16 +6,23 @@ const MessageSchema = mongoose.Schema({
     text:{
         type: String
     },
+    body:{
+        type: String
+    },
     type:{
         type:String
     },
     senderName:{
-        type: String
+        type: String,
+        default:''
     },
     fromMe:{
         type:Boolean
     },
     user:{
+        type:String
+    },
+    author:{
         type:String
     },
     time:{
