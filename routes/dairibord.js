@@ -93,7 +93,7 @@ router.post('/', function (req, res) {
                     if (typeof(txt)==='string'){
                         if (txt){
                             if (txt.indexOf('Still getting data on this') > 0) {
-                                var msg = await getMenuText('A',message);
+                                var msg = await getMenuText('A',data);
                                 finalResponse(msg);         
                             }
                         }
