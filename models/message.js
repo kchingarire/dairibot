@@ -32,7 +32,8 @@ const MessageSchema = mongoose.Schema({
         type:String
     },
     messageNumber:{
-        type:Number
+        type:Number,
+        default:0
     },
     created:{
         type:Date,

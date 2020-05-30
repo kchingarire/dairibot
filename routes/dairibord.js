@@ -6,6 +6,7 @@ var url1 = 'https//localhost:3000';
 var url2 = 'https://localhost:3000';
 
 var appPhoneNumber = '263788108777@c.us';
+var system='status@broadcast'; 
 
 // Load chat model
 const Messages = require('../models/message');
@@ -68,6 +69,8 @@ router.post('/', function (req, res) {
     //for (var i = 0; i < data.messages.length; i++) { // For each message
     var time = new Date().getTime() / 1000;
     if (data){
+        if (data.user!=appPhoneNumber && data.user!=system) {
+            //log incoming message
             console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
             var m={
                 type:data.type,
@@ -77,11 +80,13 @@ router.post('/', function (req, res) {
                 chatId:data.user,
                 time:time
             }
+
+            //save message to database
             Messages.create(m, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );
-            if (data.user!=appPhoneNumber && data.user!='status@broadcast') {
+            
                 //1. Check if first message
 
                 const checkMyResponse = async function(txt){
@@ -104,7 +109,7 @@ router.post('/', function (req, res) {
                     }])
                 }
 
-                
+
                 const  analyseResponse = async function(message, func){
                     // get last stage
                     var first = await firstMessage(message);
