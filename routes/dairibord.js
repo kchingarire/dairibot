@@ -103,6 +103,79 @@ router.post('/', function (req, res) {
                         "type": "message"
                     }])
                 }
+
+                
+                const  analyseResponse = async function(message, func){
+                    // get last stage
+                    var first = await firstMessage(message);
+                    if (first == true){
+                        askForName(message);
+                        return; 
+                    }
+                    var stage = await getLastStage(message);
+                    if (stage == 'ASK'){
+                       var txt = 'Hi! *' + message.text + '*\n';
+                        saveContactName(message,message.text);
+                        txt += 'I am very pleased to meet you.\n\n';
+                        
+                        var txt1 = await getMenuText('A',message);
+                        txt += txt1;
+                        return txt;
+                    }
+                    if (isGreeting(message.text) == true) {
+                        var txt = await getMenuText('A',message);
+                    } else if (isBackButton(message) == true){
+                        console.log('BACK');
+                        var newStage = await getPreviousStage(message);
+                        console.log('Prev Stage:', newStage);
+                        if (typeof(newStage === 'object')){
+                            var txt = await getStageText(newStage, message);
+                            //var txt = await getMenuText(newStage.stage,message);
+                        } else {
+                            var txt = await getMenuText('A',message);
+                        }
+                        checkMyResponse(txt);
+                    }
+                    else {
+                        var opt = await isMenuOption(stage,message);
+                        //console.log('opt',opt);
+                        if (opt>0) { 
+                            // implies that the option is available on the list of presented menu options
+                            var newStage = await getNextMenu(stage,opt);
+                            //console.log('Next Stage:' +newStage);
+                            var txt = await getMenuText(newStage,message);
+                            checkMyResponse(txt);
+                        } else if (opt == 0) { // implies that the option is NOT available on the list of presented menu options
+                            //check if it's a content option
+                            var msg = '';
+                            if ((stage == 'content')||(stage == 'menu')){
+                               msg = await processContentOption(message);
+                               checkMyResponse(msg);
+                            }
+                            if (msg =='') {
+                                //else, present first menu
+                                var msg = await getMenuText('A',message);
+                            }
+                        } else if (opt == -1) {
+                            //implies that the response is not a number therefore
+                            // 1. search for the response in the list of menu options
+                            var txt = await getMenuFromText(message);
+                            checkMyResponse(txt);
+                            if (txt === '') {
+                            // 2. search for the response in the content
+                                var msg = await getContentFromText(message);
+                                if ( msg != '') {
+                                    checkMyResponse(msg);
+                                } else {
+                                    //invalid response therefore, present first menu
+                                    var msg = await getMenuText('A',message);
+                                }
+                            }
+                        }
+                    }   
+                    return txt;
+                }
+
                 
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
@@ -156,76 +229,7 @@ function isBackButton(message){
     }
 }
 
-const  analyseResponse = async function(message, func){
-    // get last stage
-    var first = await firstMessage(message);
-    if (first == true){
-        askForName(message);
-        return; 
-    }
-    var stage = await getLastStage(message);
-    if (stage == 'ASK'){
-       var txt = 'Hi! *' + message.text + '*\n';
-        saveContactName(message,message.text);
-        txt += 'I am very pleased to meet you.\n\n';
-        
-        var txt1 = await getMenuText('A',message);
-        txt += txt1;
-        return txt;
-    }
-    if (isGreeting(message.text) == true) {
-        var txt = await getMenuText('A',message);
-    } else if (isBackButton(message) == true){
-        console.log('BACK');
-        var newStage = await getPreviousStage(message);
-        console.log('Prev Stage:', newStage);
-        if (typeof(newStage === 'object')){
-            var txt = await getStageText(newStage, message);
-            //var txt = await getMenuText(newStage.stage,message);
-        } else {
-            var txt = await getMenuText('A',message);
-        }
-        checkMyResponse(txt);
-    }
-    else {
-        var opt = await isMenuOption(stage,message);
-        //console.log('opt',opt);
-        if (opt>0) { 
-            // implies that the option is available on the list of presented menu options
-            var newStage = await getNextMenu(stage,opt);
-            //console.log('Next Stage:' +newStage);
-            var txt = await getMenuText(newStage,message);
-            checkMyResponse(txt);
-        } else if (opt == 0) { // implies that the option is NOT available on the list of presented menu options
-            //check if it's a content option
-            var msg = '';
-            if ((stage == 'content')||(stage == 'menu')){
-               msg = await processContentOption(message);
-               checkMyResponse(msg);
-            }
-            if (msg =='') {
-                //else, present first menu
-                var msg = await getMenuText('A',message);
-            }
-        } else if (opt == -1) {
-            //implies that the response is not a number therefore
-            // 1. search for the response in the list of menu options
-            var txt = await getMenuFromText(message);
-            checkMyResponse(txt);
-            if (txt === '') {
-            // 2. search for the response in the content
-                var msg = await getContentFromText(message);
-                if ( msg != '') {
-                    checkMyResponse(msg);
-                } else {
-                    //invalid response therefore, present first menu
-                    var msg = await getMenuText('A',message);
-                }
-            }
-        }
-    }   
-    return txt;
-}
+
 
 
 
