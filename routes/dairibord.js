@@ -192,7 +192,7 @@ router.post('/', function (req, res) {
                                     "text": responseText.msg,
                                     "type": "message",
                                     "files":[{
-                                        "name":responseText.img
+                                        "file":responseText.img
                                     }]
                                 }])
                             }else{
