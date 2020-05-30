@@ -185,7 +185,7 @@ router.post('/', function (req, res) {
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
-                    if(responseText.msg){
+                    if(typeof responseText.msg != 'undefined'){
                         res.send( [{
                             "text": responseText.msg,
                             "type": "message"
