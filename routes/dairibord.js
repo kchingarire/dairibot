@@ -187,11 +187,22 @@ router.post('/', function (req, res) {
                     console.log("RESPONSE::",responseText);
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
-                            res.send( [{
-                                "text": responseText.msg,
-                                "type": "message"
-                            }])
-                        }else{
+                            if(typeof responseText.img!='undefined'){
+                                res.send( [{
+                                    "text": responseText.msg,
+                                    "type": "message",
+                                    "files":[{
+                                        "name":responseText.img
+                                    }]
+                                }])
+                            }else{
+                                res.send( [{
+                                    "text": responseText.msg,
+                                    "type": "message"
+                                }])
+                            }
+                            
+                        }else {
                             res.send( [{
                                 "text": responseText,
                                 "type": "message"
