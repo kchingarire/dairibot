@@ -140,6 +140,9 @@ router.post('/', function (req, res) {
                             var txt = await getMenuText('A',message);
                         }
                         checkMyResponse(txt);
+                    } else if (isLoggingComplaint(stage) == true){
+                        console.log("Logging complaint");
+                         processComplaint(message,stage);
                     }
                     else {
                         var opt = await isMenuOption(stage,message);
@@ -233,6 +236,34 @@ router.post('/', function (req, res) {
                     finalResponse(txt);
                 }
 
+                const  processComplaint=async function(message, stage){
+                    console.log("processing Complaint",message);
+                    if (message.body){
+                        saveComplaint(message);
+                        //0. Check if the complaint is being concluded
+                        if (isResponseNegative(message) == true){
+                            //Send concluding msg
+                            txt = 'Thank you. Your feedback is important to us';
+                            m={"msg":txt,
+                            "img":"",
+                            "stage_type": 'menu',
+                            "stage": 'A',
+                            "stageDetails": []};
+                            finalResponse(txt);
+                            //1. forward msg to agent
+                            await forwardComplaints(message);
+                        } else {
+                            txt = "Thank you. Your complaint has been forwaded to the rightful person who will get in touch with you promptly.\n Is there anything else that you want to add?";
+                            m={"msg":txt,
+                            "img":"",
+                            "stage_type": stage.stage_type,
+                            "stage": stage.stage,
+                            "stageDetails": []};
+                            finalResponse(txt);
+                        }
+                         
+                    }   
+                }
                
                 
             }
@@ -261,8 +292,45 @@ function isBackButton(message){
     }
 }
 
+function isDirectMessage(message){
+    if (message.user.indexOf('@c.us') > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
+function isChangingName(message){
+    txt = message.text;
+    //remove special characters
+    txt = txt.replace(/[^\w\s]/gi, ' ');
+    txt = txt.toUpperCase().trim();
+    if ((txt == 'CHANGE')||(txt == 'CHANGE MY NAME')||(txt == 'CHANGE NAME')){
+        return true;
+    } else {
+        return false;
+    }
+}
 
+function isResponseNegative(message){
+    txt = message.text;
+    //remove special characters
+    txt = txt.replace(/[^\w\s]/gi, ' ');
+    txt = txt.toUpperCase().trim();
+    if ((txt == 'NO')||(txt == 'NOPE')||(txt == 'NA')){
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function isLoggingComplaint(stage){
+    if (stage.stage_type === 'complaint'){
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
 function isGreeting(txt){
@@ -401,6 +469,62 @@ const  getMenuFromText=async function(message){
             return '';
         }
  }
+
+
+
+const  saveComplaint = async function(message){
+    //check if person is in DB and store if not
+    data =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
+    
+    if (data){
+        newcomplaint = { messageId: message.id};
+        if (data.complaints){
+            data.complaints.push(newcomplaint);
+        } else {
+            data.complaints = [newcomplaint];
+        }
+        Contacts.updateOne({_id:data._id},
+            {
+                    complaints : data.complaints
+            }, function (err,data){
+                if (err) console.log('Contact not updated',err)
+            });     
+        return;
+    } else { // insert new contact
+        //console.log('Saving contact');
+        contact = new Contacts({'phoneNumber':getPhoneNumber(message), 'name': name, 'senderName': message.senderName});
+        contact.save();
+        return;         
+    }
+}
+
+const  forwardComplaints = async function(message){
+    //check if person is in DB and store if not
+    contact =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
+    agents = await Agents.find();
+     //formaat the message
+     var name = await getContactName(message);
+     var phone = getPhoneNumber(message);
+     subject = '*Complaint via Dairibord Chatbot*';
+     html = '<p><strong>Complaint From: </strong>' + name + '</p>';
+     html += '<p><strong>Phone Number: </strong>' + phone + '</p>';
+     html = '<p>' + message.body + '</p>';
+     txt = '*Complaint From:* ' + name + '\n';
+     txt += '*Phone Number:* ' + phone + '\n';
+     //txt =  message.body + '\n'; 
+    if ((contact)&&(agents)){
+        if (contact.complaints){ 
+            agents.forEach((agent)=>{
+                sendQuickMessage(agent.phoneNumber,txt);
+                contact.complaints.forEach((c)=>{
+                    forwardMessage(agent.phoneNumber,c.messageId);
+                });
+            });
+        }
+    }
+   
+}
+
 
 const  getPreviousStage=async function(message){
     var stage;
@@ -728,6 +852,7 @@ function saveStage(message, stage, stageDetails){
         if (err) console.log('PreviousStage not saved',err)
     })
 }
+
 
 
 
