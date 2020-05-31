@@ -120,16 +120,15 @@ router.post('/', function (req, res) {
                     var stage = await getLastStage(message);
                     console.log("STAGE: ",stage);
                     if (stage.stage == 'ASK'){
-                       var txt = 'Hi! *' + message.body + '*\n';
-                        saveContactName(message,message.body);
+                       var txt = 'Hi! *' + message.text + '*\n';
+                        saveContactName(message,message.text);
                         txt += 'I am very pleased to meet you.\n\n';
                         
                         var m = await getMenuText('A',message);
                         m.msg = txt + m.msg;
                         //sendMessage(message, m);
-                        return m.msg;
                     }
-                    if ((isGreeting(message.body) == true)) {
+                    if ((isGreeting(message.text) == true)) {
                         var m = await getMenuText('A',message);
                         //sendMessage(message, m);
                     } else if (isBackButton(message) == true){
@@ -174,6 +173,7 @@ router.post('/', function (req, res) {
                             if (msg =='') {
                                 //else, present first menu
                                 var msg = await getMenuText('A',message);
+                                return msg
                                 //sendMessage(message, msg);
                             }
 
