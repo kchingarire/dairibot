@@ -222,26 +222,20 @@ router.post('/', function (req, res) {
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message",
-                                    "files":[{
-                                        "name":"ad1.jpg"
-                                    }]
+                                    "file":"ad1.jpg"
                                 }])
                             }else{
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message",
-                                    "files":[{
-                                        "name":"ad1.jpg"
-                                    }]
+                                    "file":"ad1.jpg"
                                 }])
 			   }
                         }else {
                             res.send( [{
                                 "text": responseText,
                                 "type": "message",
-                                "files":[{
-                                    "name":"ad1.jpg"
-                                }]
+                                "file":"ad1.jpg"
                             }])
                         }
                     }else{
