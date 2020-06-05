@@ -223,18 +223,29 @@ router.post('/', function (req, res) {
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message",
-                                    "file":imageFile
+                                    "files":[{
+                                        "name":"dairibord",
+                                        "file":imageFile
+                                    }]
                                 }])
                             }else{
                                 res.send( [{
                                     "text": responseText.msg,
-                                    "type": "message"
+                                    "type": "message",
+                                    "files":[{
+                                        "name":"dairibord",
+                                        "file":imageFile
+                                    }]
                                 }])
 			   }
                         }else {
                             res.send( [{
                                 "text": responseText,
-                                "type": "message"
+                                "type": "message",
+                                "files":[{
+                                    "name":"dairibord",
+                                    "file":imageFile
+                                }]
                             }])
                         }
                     }else{
