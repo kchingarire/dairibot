@@ -222,30 +222,25 @@ router.post('/', function (req, res) {
                                     "text": responseText.msg,
                                     "type": "message",
                                     "file":responseText.img
-                                
                                 }])
                             }else{
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message"
                                 }])
-                            }
-                            
+			   }
                         }else {
                             res.send( [{
                                 "text": responseText,
                                 "type": "message"
                             }])
                         }
-                        
                     }else{
-                        
                         res.send( [{
                             "text": 'Sorry... there is no information yet on this',
                             "type": "message"
                         }])
                     }
-                        
                 }
                 finalResponse(data);
 
@@ -416,7 +411,6 @@ const processContentOption = async function (message){
                 }
             }
         }
-        
         return '';
     } else {
         return '';
