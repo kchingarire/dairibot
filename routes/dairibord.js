@@ -221,7 +221,7 @@ router.post('/', function (req, res) {
                     
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
-                            if(response.img!==undefined && responseText.img.length>1){
+                            if(responseText.img!==undefined && responseText.img.length>1){
                                 var image=await findImage(responseText.img);
                                 res.send( [{
                                     "text": responseText.msg,
