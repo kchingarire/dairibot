@@ -219,6 +219,7 @@ router.post('/', function (req, res) {
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
                     var image=findImage('dataAgeLogo');
+                    console.log(image);
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
                             if(typeof responseText.img!='undefined'){
