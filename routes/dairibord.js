@@ -218,48 +218,36 @@ router.post('/', function (req, res) {
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
-                    var image=await findImage('dataAgeLogo');
-                    console.log(image);
+                    
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
                             if(typeof responseText.img!='undefined'){
+                                var image=await findImage(responseText.img);
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message",
                                     "files":[{
-                                        "name":"ad1.jpg",
+                                        "name":"file.jpg",
                                         "file":image.base64
                                     }]
                                 }])
                             }else{
                                 res.send( [{
                                     "text": responseText.msg,
-                                    "type": "message",
-                                    "files":[{
-                                        "name":"ad1.jpg",
-                                        "file":image.base64
-                                    }]
+                                    "type": "message"
                                     
                                 }])
 			   }
                         }else {
                             res.send( [{
                                 "text": responseText,
-                                "type": "message",
-                                "files":[{
-                                    "name":"ad1.jpg",
-                                    "file":image.base64
-                                }]
+                                "type": "message"
                             }])
                         }
                     }else{
                         res.send( [{
                             "text": 'Sorry... there is no information yet on this',
-                            "type": "message",
-                            "files":[{
-                                "name":"ad1.jpg",
-                                "file":image.base64
-                            }]
+                            "type": "message"
                         }])
                     }
                 }
