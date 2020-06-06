@@ -218,7 +218,7 @@ router.post('/', function (req, res) {
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
-                    var image=findImage('dataAgeLogo');
+                    var image=await findImage('dataAgeLogo');
                     console.log(image);
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
