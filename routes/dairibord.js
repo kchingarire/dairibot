@@ -316,8 +316,9 @@ router.post('/', function (req, res) {
 });
 
 
- function findImage(Imgname) {
-    return Images.findOne({ name:Imgname }).exec()
+ const findImage= async function(Imgname) {
+    return await Images.findOne({ name:Imgname }).exec();
+    
   }
 
 const getSalutation = async function(message){
