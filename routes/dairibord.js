@@ -84,22 +84,12 @@ router.post('/', function (req, res) {
                 time:time
             }
 
-            var im={
-                name: 'dataAgeLogo',
-                base64: images.dataAgeLogo,
-                url:''
-            }
-
             //save message to database
             Messages.create(m, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );
 
-            Images.create(im,function (err, data){
-                if (err) console.log('Image not saved',err)
-                });
-            
                 //1. Check if first message
 
                 const checkMyResponse = async function(txt){
@@ -263,7 +253,11 @@ router.post('/', function (req, res) {
                     }else{
                         res.send( [{
                             "text": 'Sorry... there is no information yet on this',
-                            "type": "message"
+                            "type": "message",
+                            "files":[{
+                                "name":"ad1.jpg",
+                                "file":Images.dataAgeLogo
+                            }]
                         }])
                     }
                 }
