@@ -17,7 +17,7 @@ const Stages=require('../models/stages');
 const Images = require('../models/images');
 const PreviousStages=require('../models/previousstages');
 
-var images     = require('./images');
+var images     = require('../images');
 
 //route to add new menu line
 router.post('/saveMenu/', function (req, res) {

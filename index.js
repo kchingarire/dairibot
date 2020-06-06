@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var session = require('express-session');
 // load in JSON from a file named data.json
-var images     = require('../images');
+var images     = require('./images');
 
 
 const app = express()
