@@ -315,7 +315,7 @@ router.post('/', function (req, res) {
 });
 
 
- findImage: (Imgname) => {
+ function findImage(Imgname) {
     return Images.findOne({ name:Imgname }).exec()
   }
 
