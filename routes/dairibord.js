@@ -14,6 +14,7 @@ const Contacts= require('../models/contacts');
 const Contents= require('../models/contents');
 const Menu = require('../models/menu');
 const Stages=require('../models/stages');
+const Images = require('../models/images');
 const PreviousStages=require('../models/previousstages');
 
 
@@ -82,11 +83,21 @@ router.post('/', function (req, res) {
                 time:time
             }
 
+            var im={
+                name: 'dataAgeLogo',
+                base64: images.dataAgeLogo,
+                url:''
+            }
+
             //save message to database
             Messages.create(m, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );
+
+            Images.create(im,function (err, data){
+                if (err) console.log('Image not saved',err)
+                });
             
                 //1. Check if first message
 
@@ -222,7 +233,10 @@ router.post('/', function (req, res) {
                                 res.send( [{
                                     "text": responseText.msg,
                                     "type": "message",
-                                    "file":"ad1.jpg"
+                                    "files":[{
+                                        "name":"ad1.jpg",
+                                        "file":Images.dataAgeLogo
+                                    }]
                                 }])
                             }else{
                                 res.send( [{
@@ -230,7 +244,7 @@ router.post('/', function (req, res) {
                                     "type": "message",
                                     "files":[{
                                         "name":"ad1.jpg",
-                                        "file":dataAgeLogo
+                                        "file":Images.dataAgeLogo
                                     }]
                                     
                                 }])
@@ -239,7 +253,10 @@ router.post('/', function (req, res) {
                             res.send( [{
                                 "text": responseText,
                                 "type": "message",
-                                "name":"ad1.jpg"
+                                "files":[{
+                                    "name":"ad1.jpg",
+                                    "file":Images.dataAgeLogo
+                                }]
                             }])
                         }
                     }else{
