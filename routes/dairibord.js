@@ -233,7 +233,7 @@ router.post('/', function (req, res) {
                                 }])
                             }else {
                                 res.send( [{
-                                    "text": responseText,
+                                    "text": responseText.msg,
                                     "type": "message"
                                 }])
                             }
