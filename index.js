@@ -6,7 +6,6 @@ var session = require('express-session');
 // load in JSON from a file named data.json
 var images     = require('./images');
 
-var app = express();
 
 const app = express()
 const Dairibord = require('./routes/dairibord');
