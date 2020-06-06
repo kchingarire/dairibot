@@ -218,6 +218,7 @@ router.post('/', function (req, res) {
                 const finalResponse = async function(message){
                     responseText= await analyseResponse(message);
                     console.log("RESPONSE::",responseText);
+                    var image=findImage('dataAgeLogo');
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
                             if(typeof responseText.img!='undefined'){
@@ -226,7 +227,7 @@ router.post('/', function (req, res) {
                                     "type": "message",
                                     "files":[{
                                         "name":"ad1.jpg",
-                                        "file":Images.dataAgeLogo
+                                        "file":image.base64
                                     }]
                                 }])
                             }else{
@@ -235,7 +236,7 @@ router.post('/', function (req, res) {
                                     "type": "message",
                                     "files":[{
                                         "name":"ad1.jpg",
-                                        "file":Images.dataAgeLogo
+                                        "file":image.base64
                                     }]
                                     
                                 }])
@@ -246,7 +247,7 @@ router.post('/', function (req, res) {
                                 "type": "message",
                                 "files":[{
                                     "name":"ad1.jpg",
-                                    "file":Images.dataAgeLogo
+                                    "file":image.base64
                                 }]
                             }])
                         }
@@ -256,7 +257,7 @@ router.post('/', function (req, res) {
                             "type": "message",
                             "files":[{
                                 "name":"ad1.jpg",
-                                "file":Images.dataAgeLogo
+                                "file":image.base64
                             }]
                         }])
                     }
@@ -314,7 +315,9 @@ router.post('/', function (req, res) {
 });
 
 
-
+ findImage: (Imgname) => {
+    return Images.findOne({ name:Imgname }).exec()
+  }
 
 const getSalutation = async function(message){
     name = await getContactName(message);
@@ -340,6 +343,8 @@ function isDirectMessage(message){
         return false;
     }
 }
+
+
 
 function isChangingName(message){
     txt = message.text;
