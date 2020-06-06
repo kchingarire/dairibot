@@ -221,7 +221,7 @@ router.post('/', function (req, res) {
                     
                     if(typeof responseText != 'undefined'){
                         if(typeof responseText.msg!='undefined'){
-                            if(typeof responseText.img!='undefined'){
+                            if(typeof responseText.img!='undefined' || responseText.img!=''){
                                 var image=await findImage(responseText.img);
                                 res.send( [{
                                     "text": responseText.msg,
@@ -237,7 +237,7 @@ router.post('/', function (req, res) {
                                     "type": "message"
                                     
                                 }])
-			   }
+			                }
                         }else {
                             res.send( [{
                                 "text": responseText,
