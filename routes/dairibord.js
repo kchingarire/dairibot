@@ -469,7 +469,7 @@ const  getNextMenu=async function(stage, option){
 }
 
 const  getMenuFromText=async function(message){
-    console.log("MSG:",message);
+    console.log("MSG1:",message);
     var txt = message.text;
     data = await Menu.find({
         $text: { $search: txt , $language: 'english'}
@@ -775,7 +775,7 @@ const getMenuById = async function(contentId, message){
 }
 
 const getContentFromText = async function(message){
-    console.log("MSG:",message);
+    console.log("MSG2:",message);
     var txt = message.text
     data = await Contents.find({
         $text: { $search: txt , $language: 'english'}
