@@ -66,40 +66,7 @@ router.post('/saveContent/', function (req, res) {
 
 // Handle POST request
 router.post('/', function (req, res) {
-    // console.log('in webhook');  
-    var data = req.body; // New messages in the "body" variable
-    //console.log(data);
-    //for (var i = 0; i < data.messages.length; i++) { // For each message
-    var time = new Date().getTime() / 1000;
-    if (data){
-        if (data.user!=appPhoneNumber && data.user!=system) {
-            //log incoming message
-            console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
-            var myMessage={
-                type:data.type,
-                author:data.user,
-                body:data.text,
-                fromMe:false,
-                chatId:data.user,
-                time:time,
-                text:data.text,
-                user: data.user
-            }
-
-            //save message to database
-            Messages.create(myMessage, function (err, data){
-                if (err) console.log('Message not saved',err)
-                }
-            );
-
-            analyseResponse(myMessage);
  
-            
-
-        }
-    }
-
-
     const sendInitialMessage = async function(message){
         var m = await getMenuText('A',message);
         sendMessage(message, m);
@@ -964,6 +931,37 @@ router.post('/', function (req, res) {
         }, function (err, data){
             if (err) console.log('PreviousStage not saved',err)
         })
+    }
+
+
+    var data = req.body; // New messages in the "body" variable
+    //console.log(data);
+    //for (var i = 0; i < data.messages.length; i++) { // For each message
+    var time = new Date().getTime() / 1000;
+    if (data){
+        if (data.user!=appPhoneNumber && data.user!=system) {
+            //log incoming message
+            console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
+            var myMessage={
+                type:data.type,
+                author:data.user,
+                body:data.text,
+                fromMe:false,
+                chatId:data.user,
+                time:time,
+                text:data.text,
+                user: data.user
+            }
+
+            //save message to database
+            Messages.create(myMessage, function (err, data){
+                if (err) console.log('Message not saved',err)
+                }
+            );
+
+            analyseResponse(myMessage);  
+
+        }
     }
     
 });
