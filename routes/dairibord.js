@@ -794,7 +794,7 @@ router.post('/', function (req, res) {
     
     const sendMessage = async function(originalMessage,msg) {
         console.log('This is msg:',msg);
-        responseText = 'Test';
+        responseText = msg;
         console.log("RESPONSE::",responseText);
         
         if(typeof responseText != 'undefined'){
