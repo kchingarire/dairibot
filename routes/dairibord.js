@@ -655,7 +655,7 @@ router.post('/', function (req, res) {
                    }
                    //console.log("This is the TYPE:",data[0].content_type);
                 
-                   if (data[0].title.toUpperCase.includes('COMPLAINT')){
+                   if (data[0].title.toUpperCase().includes('COMPLAINT')){
                        stage_type='complaint';
                    }
                     //stage_type = data[0].content_type;
