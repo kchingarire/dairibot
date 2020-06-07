@@ -659,7 +659,7 @@ router.post('/', function (req, res) {
                     console.log("data[0]: is here");
                    msg += data[0].content;
                    m.msg = msg;
-                   m.stage_type = stage_type;
+                   m.stage_type = data[0].type;
                    console.log("Now returning m",m);
                    return m;
               } else if (data.length>1){
