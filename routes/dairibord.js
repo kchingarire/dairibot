@@ -774,7 +774,7 @@ const getMenuById = async function(contentId, message){
     }
 }
 
-const getContentFromText = async function(message){
+const getContentFromText = async function(stage,message){
     console.log("MSG2:",message);
     var txt = message.text
     data = await Contents.find({
