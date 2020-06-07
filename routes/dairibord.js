@@ -784,11 +784,11 @@ const getContentFromText = async function(stage,message){
         var msg = 'Could not find any information on what you have asked.\n';
         msg += 'Your enquiry has been forwarded to Customer Services.\n';
         msg = await getMenuText('A',message);
-        var m={
-            "msg":msg,
-            "img":""
-        }
-        return m;
+        // var m={
+        //     "msg":msg,
+        //     "img":""
+        // }
+        return msg;
     } else if (data.length == 1){
         var msg = ''; var img='';
         if (data[0].title){
