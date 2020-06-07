@@ -646,7 +646,7 @@ router.post('/', function (req, res) {
                 return 'Still getting data on this.... Will update you shortly.';
               } else if (data.length == 1) {
                    var msg = '';var img='';
-                   console.log("data[0]:",data[0]);
+                   console.log("data[0]: is here",data[0]);
                    if (data[0].title){
                        msg = '*'+ data[0].title.trim() + '*\n'
                    }
@@ -656,7 +656,7 @@ router.post('/', function (req, res) {
                    
                     stage_type = data[0].type;
                     // saveStage(message,stage_type,stage);
-                   
+                    console.log("data[0]: is here");
                    msg += data[0].content;
                    m.msg = msg;
                    m.stage_type = stage_type;
@@ -793,7 +793,6 @@ router.post('/', function (req, res) {
     }
     
     const sendMessage = async function(originalMessage,msg) {
-        console.log('This is msg:',msg);
         responseText = msg;
         console.log("RESPONSE::",responseText);
         
