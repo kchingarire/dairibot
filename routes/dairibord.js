@@ -660,7 +660,7 @@ router.post('/', function (req, res) {
                    msg += data[0].content;
                    m.msg = msg;
                    m.stage_type = stage_type;
-                   //console.log(m);
+                   console.log("Now returning m",m);
                    return m;
               } else if (data.length>1){
                    //Get array of titles
