@@ -653,13 +653,13 @@ router.post('/', function (req, res) {
                    if(data[0].image){
                        img=data[0].image;
                    }
-                   console.log("This is the TYPE:",data[0].type);
-                    stage_type = data[0].type;
+                   console.log("This is the TYPE:",data[0].content_type);
+                    stage_type = data[0].content_type;
                     // saveStage(message,stage_type,stage);
                     console.log("data[0]: is here");
                    msg += data[0].content;
                    m.msg = msg;
-                   m.stage_type = data[0].type;
+                   m.stage_type = data[0].content_type;
                    console.log("Now returning m",m);
                    return m;
               } else if (data.length>1){
@@ -738,8 +738,8 @@ router.post('/', function (req, res) {
             if(data[0].image){
                 img=data[0].image;
             }
-            if (data[0].type){
-                stage_type = data[0].type;
+            if (data[0].content_type){
+                stage_type = data[0].content_type;
              }
             msg += data[0].content;
             var m={

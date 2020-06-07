@@ -5,7 +5,7 @@ const ContentsSchema = Schema({
     id: String,
     title: String,
     content:{
-        type: String
+        content_type: String
     },
     keywords: Array,
     image:String
