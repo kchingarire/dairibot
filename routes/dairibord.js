@@ -648,6 +648,7 @@ router.post('/', function (req, res) {
                    var msg = '';var img='';
                    console.log("data[0]: is here",data[0]);
                    if (data[0].title){
+                       console.log("title:",data[0].title);
                        msg = '*'+ data[0].title.trim() + '*\n'
                    }
                    if(data[0].image){
