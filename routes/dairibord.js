@@ -75,7 +75,7 @@ router.post('/', function (req, res) {
         if (data.user!=appPhoneNumber && data.user!=system) {
             //log incoming message
             console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
-            var m={
+            var myMessage={
                 type:data.type,
                 author:data.user,
                 body:data.text,
@@ -87,7 +87,7 @@ router.post('/', function (req, res) {
             }
 
             //save message to database
-            Messages.create(m, function (err, data){
+            Messages.create(myMessage, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );
@@ -252,7 +252,7 @@ router.post('/', function (req, res) {
                         }])
                     }
                 }
-                finalResponse(m);
+                finalResponse(myMessage);
 
                 const askForName = async function(message){
                     data =  await Menu.find({stage: 'ASK'});
@@ -265,7 +265,7 @@ router.post('/', function (req, res) {
                          })
                        }
                     }
-                    finalResponse(txt);
+                    finalResponse(message);
                 }
 
                 const  processComplaint=async function(message, stage){
@@ -281,7 +281,7 @@ router.post('/', function (req, res) {
                             "stage_type": 'menu',
                             "stage": 'A',
                             "stageDetails": []};
-                            finalResponse(txt);
+                            finalResponse(message);
                             //1. forward msg to agent
                             await forwardComplaints(message);
                         } else {
