@@ -653,7 +653,7 @@ router.post('/', function (req, res) {
                    if(data[0].image){
                        img=data[0].image;
                    }
-                   
+                   console.log("This is the TYPE:",data[0].type);
                     stage_type = data[0].type;
                     // saveStage(message,stage_type,stage);
                     console.log("data[0]: is here");
