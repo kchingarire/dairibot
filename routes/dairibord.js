@@ -16,6 +16,7 @@ const Menu = require('../models/menu');
 const Stages=require('../models/stages');
 const Images = require('../models/images');
 const PreviousStages=require('../models/previousstages');
+const Agents = require('../models/agents');
 
 var images     = require('../images');
 
