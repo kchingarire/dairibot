@@ -81,7 +81,9 @@ router.post('/', function (req, res) {
                 body:data.text,
                 fromMe:false,
                 chatId:data.user,
-                time:time
+                time:time,
+                text:data.text,
+                user: data.user
             }
 
             //save message to database
@@ -250,7 +252,7 @@ router.post('/', function (req, res) {
                         }])
                     }
                 }
-                finalResponse(data);
+                finalResponse(m);
 
                 const askForName = async function(message){
                     data =  await Menu.find({stage: 'ASK'});
