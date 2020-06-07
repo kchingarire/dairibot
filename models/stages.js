@@ -16,6 +16,9 @@ const StagesSchema = mongoose.Schema({
         default:Date.now,
         required:true
     },
+    stage_type:{
+        type:String
+    },
     name: String,
     details : [ {
         option : Int32,
