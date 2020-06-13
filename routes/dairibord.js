@@ -798,7 +798,7 @@ router.post('/', function (req, res) {
     }
     
     const sendMessage = async function(originalMessage,msg) {
-        if (msg.isArray()){
+        if (Array.isArray(msg)){
             mesgs = msg;
         }else{
             mesgs = [msg];
