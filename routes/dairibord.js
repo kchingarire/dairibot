@@ -863,6 +863,7 @@ router.post('/', function (req, res) {
             phone: ph,
             messageId: msgid
         }
+        
         request({
             url: url3,
             method: "POST",
@@ -939,7 +940,7 @@ router.post('/', function (req, res) {
 
 
     var data = req.body; // New messages in the "body" variable
-    //console.log(data);
+    console.log(data);
     //for (var i = 0; i < data.messages.length; i++) { // For each message
     var time = new Date().getTime() / 1000;
     if (data){
