@@ -832,10 +832,13 @@ router.post('/', function (req, res) {
                        img=data[0].image;
                    }
                    //console.log("This is the TYPE:",data[0].content_type);
-                
+                   if (data[0].stage_type){
+                    stage_type = data[0].stage_type;
+                   }
                    if (data[0].title.toUpperCase().includes('COMPLAINT')){
                        stage_type='complaint';
                    }
+                   
                     //stage_type = data[0].content_type;
                     // saveStage(message,stage_type,stage);
                     //console.log("data[0]: is here");
