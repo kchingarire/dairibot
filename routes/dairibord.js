@@ -979,12 +979,18 @@ router.post('/', function (req, res) {
     
     const sendMessage = async function(originalMessage,msg) {
         console.log(msg);
+
         if (Array.isArray(msg)){
             mesgs = msg;
             stage_type = msg[0].stage_type;
             stageDetails = msg[0].stateDetails;
             stage = msg[0].stage;
         }else{
+            if (typeof(msg) == "object"){
+                if (msg.msg && (typeof(msg.msg)== "object")){
+                    msg = msg.msg;
+                }
+            }
             mesgs = [msg];
             stage_type = msg.stage_type;
             stageDetails = msg.stateDetails;
