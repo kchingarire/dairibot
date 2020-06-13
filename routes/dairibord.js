@@ -818,7 +818,7 @@ router.post('/', function (req, res) {
         //     }
         // ]
         responseMesgs = [];
-        mesgs.forEach(mesg =>{
+        mesgs.forEach(async mesg =>{
             newMsg = {};
             if (mesg.chatId){
                 newMsg.chatId = mesg.chatId;
