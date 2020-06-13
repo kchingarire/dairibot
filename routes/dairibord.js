@@ -830,6 +830,8 @@ router.post('/', function (req, res) {
             }
             if (mesg.text){
                 newMsg.text = mesg.text;
+            } else if (mesg.msg){
+                newMsg.text = mesg.msg;
             } else {
                 if (typeof(mesg) == "string") 
                     newMsg.text = mesg;
