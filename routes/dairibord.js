@@ -775,6 +775,7 @@ router.post('/', function (req, res) {
        //console.log('menu',data);
        if (data){
            if (data.length>0){
+               data.sort((a,b)=>(a.option>b.option)?1:-1);
                data.forEach((menuItem)=>{
                    txt += '\n' + menuItem.option + '. ' + menuItem.itemName;
                    stageDetails.push({option: menuItem.option, title: menuItem.itemName});
