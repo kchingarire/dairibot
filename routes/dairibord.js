@@ -445,7 +445,7 @@ router.post('/', function (req, res) {
             }
         }
 
-        if (mesgs.length>0) newMessageList.push(mesgs);
+        if (mesgs.length>0) newMessageList.concat(mesgs);
         sendMessage(message,newMessageList);   
     }
     
