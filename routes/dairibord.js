@@ -993,16 +993,8 @@ router.post('/', function (req, res) {
         if (!data.fromMe) {
             //log incoming message
             console.log('Incoming message Type:'+data.type+' From:'+ data.chatId+' text >>'+data.body);
-            var myMessage={
-                type:data.type,
-                author:data.chatId,
-                body:data.body,
-                fromMe:data.fromMe,
-                chatId:data.chatId,
-                time:time,
-                text:data.body,
-                user: data.user
-            }
+            var myMessage=data;
+            myMessage.time = time;
 
             //save message to database
             Messages.create(data, function (err, data){
