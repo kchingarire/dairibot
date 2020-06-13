@@ -845,6 +845,9 @@ router.post('/', function (req, res) {
         responseMesgs = [];
         mesgs.forEach(async mesg =>{
             newMsg = {};
+            if (typeof(mesg) == "object") {
+                newMsg = mesg;
+            }
             if (mesg.chatId){
                 newMsg.chatId = mesg.chatId;
             } else {
