@@ -363,9 +363,9 @@ router.post('/', function (req, res) {
                 "stage_type": 'menu',
                 "stage": 'A',
                 "stageDetails": []};
-                sendMessage(message,m);
+                // sendMessage(message,m);
                 //1. forward msg to agent
-                await forwardComplaints(message);
+                await forwardComplaints(message,m);
             } else {
                 txt = "Thank you. Your complaint has been forwaded to the rightful person who will get in touch with you promptly.\n Is there anything else that you want to add?";
                 m={"msg":txt,
@@ -384,7 +384,10 @@ router.post('/', function (req, res) {
         data =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
         
         if (data){
-            newcomplaint = { messageId: message.id};
+            newcomplaint = { 
+                messageId: message.id,
+                text: message.body
+            };
             if (data.complaints){
                 data.complaints.push(newcomplaint);
             } else {
@@ -405,8 +408,9 @@ router.post('/', function (req, res) {
         }
     }
     
-    const  forwardComplaints = async function(message){
+    const  forwardComplaints = async function(message,m){
         //check if person is in DB and store if not
+        var newMessageList = [m];
         contact =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
         agents = await Agents.find();
          //formaat the message
@@ -418,18 +422,31 @@ router.post('/', function (req, res) {
          html = '<p>' + message.body + '</p>';
          txt = '*Complaint From:* ' + name + '\n';
          txt += '*Phone Number:* ' + phone + '\n';
-         //txt =  message.body + '\n'; 
+         //txt =  message.body + '\n';
+         mesgs = [] 
         if ((contact)&&(agents)){
             if (contact.complaints){ 
                 agents.forEach((agent)=>{
-                    sendQuickMessage(agent.phoneNumber,txt);
-                    contact.complaints.forEach((c)=>{
-                        forwardMessage(agent.phoneNumber,c.messageId);
-                    });
+                    if (agent.chatId){
+                        mesgs.push({
+                            "chatId": agent.chatId,
+                            "text": txt
+                        });
+                        contact.complaints.forEach((c)=>{
+                            mesgs.push({
+                                "chatId": agent.chatId,
+                                "text": c.text,
+                                "forwarded":true,
+                                "messageId":c.messageId
+                            });
+                        });
+                    }
                 });
             }
         }
-       
+
+        if (mesgs.length>0) newMessageList.push(mesgs);
+        sendMessage(message,newMessageList);   
     }
     
     
@@ -801,8 +818,14 @@ router.post('/', function (req, res) {
         console.log(msg);
         if (Array.isArray(msg)){
             mesgs = msg;
+            stage_type = msg[0].stage_type;
+            stageDetails = msg[0].stateDetails;
+            stage = msg[0].stage;
         }else{
             mesgs = [msg];
+            stage_type = msg.stage_type;
+            stageDetails = msg.stateDetails;
+            stage = msg.stage;
         }
 
         //build the response mesg
@@ -854,7 +877,7 @@ router.post('/', function (req, res) {
         
         res.send(responseMesgs);
 
-        saveStage(originalMessage,msg.stage_type,msg.stage,msg.stageDetails);
+        saveStage(originalMessage,stage_type,stage,stageDetails);
        
     };
     

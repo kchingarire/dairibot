@@ -8,7 +8,23 @@ const ContactsSchema = Schema({
     },
     name:{
         type:String
-    }
+    },
+    chatId:{
+        type:String
+    },
+    senderName:{
+        type:String
+    },
+    complaints : [ {
+        messageId : String,
+        text: String,
+        created:{
+            type:Date,
+            default:Date.now,
+            required:true
+        },
+      }
+    ]
 
 });
 

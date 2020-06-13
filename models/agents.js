@@ -8,6 +8,9 @@ const AgentsSchema = Schema({
     },
     name:{
         type:String
+    },
+    chatId: {
+        type:String
     }
 
 });
