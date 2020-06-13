@@ -798,40 +798,58 @@ router.post('/', function (req, res) {
     }
     
     const sendMessage = async function(originalMessage,msg) {
-        responseText = msg;
-        console.log("RESPONSE::",responseText);
-        
-        if(typeof responseText != 'undefined'){
-            if(typeof responseText.msg!='undefined'){
-                if(responseText.img!==undefined && responseText.img.length>1){
-                    var image=await findImage(responseText.img);
-                    res.send( [{
-                        "text": responseText.msg,
-                        "type": "message",
-                        "files":[{
-                            "name":"file.jpg",
-                            "file":image.base64
-                        }]
-                    }])
-                }else {
-                    res.send( [{
-                        "text": responseText.msg,
-                        "type": "message"
-                    }])
-                }
-            }else {
-                res.send( [{
-                    "text": responseText,
-                    "type": "message"
-                }])
-            }
+        if (msg.isArray()){
+            mesgs = msg;
         }else{
-            res.send( [{
-                "text": 'Sorry... there is no information yet on this',
-                "type": "message"
-            }])
+            mesgs = [msg];
         }
 
+        //build the response mesg
+        // [
+        //     {
+        //         "text": "txt of message",
+        //         "chaId": "ChatId of Recipient of message"
+        //         "files": [
+        //             {
+        //                 "name": "name of file",
+        //                 "file": "base64 of image/file"
+        //             }
+        //         ]
+        //     }
+        // ]
+        responseMesgs = [];
+        mesgs.forEach(mesg =>{
+            newMsg = {};
+            if (mesg.chatId){
+                newMsg.chatId = mesg.chatId;
+            } else {
+                if (originalMessage.chatId)
+                    newMsg.chatId = originalMessage.chatId;
+                else newMsg.chatId = data.chatId;
+            }
+            if (mesg.text){
+                newMsg.text = mesg.text;
+            } else {
+                if (typeof(mesg) == "string") 
+                    newMsg.text = mesg;
+                else newMsg.text = "Sorry... there is no information yet on this";
+            }
+            files = []
+            if (mesg.img!==undefined && mesg.img.length>1){
+                var image=await findImage(responseText.img);
+                files =[{
+                    "name": "image.jpg",
+                    "file": image.base64
+                }]
+            }
+            if (files.length>=0){
+                newMsg.files = files;
+            }
+            responseMesgs.push(newMsg); 
+        });
+        console.log("RESPONSE::",responseMesgs);
+        
+        res.send(responseMesgs);
 
         saveStage(originalMessage,msg.stage_type,msg.stage,msg.stageDetails);
        
@@ -940,8 +958,8 @@ router.post('/', function (req, res) {
 
 
     var data = req.body; // New messages in the "body" variable
-    console.log("This is the full message OBJECT");
-    console.log(data);
+    // console.log("This is the full message OBJECT");
+    // console.log(data);
     //for (var i = 0; i < data.messages.length; i++) { // For each message
     var time = new Date().getTime() / 1000;
     if (data){
@@ -952,7 +970,7 @@ router.post('/', function (req, res) {
                 type:data.type,
                 author:data.chatId,
                 body:data.body,
-                fromMe:false,
+                fromMe:data.fromMe,
                 chatId:data.chatId,
                 time:time,
                 text:data.body,
