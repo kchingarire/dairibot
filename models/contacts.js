@@ -18,6 +18,7 @@ const ContactsSchema = Schema({
     complaints : [ {
         messageId : String,
         text: String,
+        forwarded: Boolean,
         created:{
             type:Date,
             default:Date.now,

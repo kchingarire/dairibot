@@ -434,15 +434,18 @@ router.post('/', function (req, res) {
                             "text": txt
                         });
                         contact.complaints.forEach((c)=>{
-                            mesgs.push({
-                                "chatId": agent.chatId,
-                                "text": c.text,
-                                "forwarded":true,
-                                "messageId":c.messageId
-                            });
+                            if (!c.forwarded){
+                                mesgs.push({
+                                    "chatId": agent.chatId,
+                                    "text": c.text,
+                                    "forwarded":true,
+                                    "messageId":c.messageId
+                                });
+                            }
                         });
                     }
                 });
+                markComplaintsAsForwarded(contact.phoneNumber);
             }
         }
         console.log(mesgs);
@@ -586,6 +589,28 @@ router.post('/', function (req, res) {
             return;         
         }
     };
+
+    const markComplaintsAsForwarded = async function(phoneNumber){
+        //check if person is in DB and store if not
+        data =  await Contacts.findOne({'phoneNumber':phoneNumber});
+        
+        if (data){
+            newComplaints = [];
+            data.complaints.forEach((c)=>{
+                c.forwarded = true;
+                newComplaints.push(c);
+            });
+            Contacts.updateOne({_id:data._id},
+                {
+                        complaints: newComplaints,
+                }, function (err,data){
+                    if (err) console.log('Contact not updated',err)
+                });     
+            return;
+        } 
+    };
+
+
     
     function dbtest(){
         Menu.find({},function (err, docs) {
