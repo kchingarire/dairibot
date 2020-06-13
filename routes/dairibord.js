@@ -427,8 +427,8 @@ router.post('/', function (req, res) {
         if ((contact)&&(agents)){
             if (contact.complaints){ 
                 agents.forEach((agent)=>{
-                    console.log(agent);
                     if (agent.chatId){
+                        console.log(agent);
                         mesgs.push({
                             "chatId": agent.chatId,
                             "text": txt
@@ -445,7 +445,7 @@ router.post('/', function (req, res) {
                 });
             }
         }
-
+        console.log(mesgs);
         if (mesgs.length>0) newMessageList.concat(mesgs);
         sendMessage(message,newMessageList);   
     }
