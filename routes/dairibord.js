@@ -157,7 +157,7 @@ router.post('/', function (req, res) {
             return; 
         }
         var stage = await getLastStage(message);
-        console.log("STAGE: ",stage);
+        // console.log("STAGE: ",stage);
         if (stage.stage == 'ASK'){
            var txt = 'Hi! *' + message.body + '*\n';
             saveContactName(message,message.body);
@@ -351,7 +351,7 @@ router.post('/', function (req, res) {
     }
     
     const  processComplaint=async function(message, stage){
-        console.log("processing Complaint",message);
+        // console.log("processing Complaint",message);
         if (message.body){
             saveComplaint(message);
             //0. Check if the complaint is being concluded
@@ -427,6 +427,7 @@ router.post('/', function (req, res) {
         if ((contact)&&(agents)){
             if (contact.complaints){ 
                 agents.forEach((agent)=>{
+                    console.log(agent);
                     if (agent.chatId){
                         mesgs.push({
                             "chatId": agent.chatId,
