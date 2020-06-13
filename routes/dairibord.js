@@ -940,26 +940,27 @@ router.post('/', function (req, res) {
 
 
     var data = req.body; // New messages in the "body" variable
+    console.log("This is the full message OBJECT");
     console.log(data);
     //for (var i = 0; i < data.messages.length; i++) { // For each message
     var time = new Date().getTime() / 1000;
     if (data){
-        if (data.user!=appPhoneNumber && data.user!=system) {
+        if (!data.fromMe) {
             //log incoming message
-            console.log('Incoming message Type:'+data.type+' From:'+ data.user+' text >>'+data.text);
+            console.log('Incoming message Type:'+data.type+' From:'+ data.chatId+' text >>'+data.body);
             var myMessage={
                 type:data.type,
-                author:data.user,
-                body:data.text,
+                author:data.chatId,
+                body:data.body,
                 fromMe:false,
-                chatId:data.user,
+                chatId:data.chatId,
                 time:time,
-                text:data.text,
+                text:data.body,
                 user: data.user
             }
 
             //save message to database
-            Messages.create(myMessage, function (err, data){
+            Messages.create(data, function (err, data){
                 if (err) console.log('Message not saved',err)
                 }
             );
