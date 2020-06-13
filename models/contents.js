@@ -7,6 +7,7 @@ const ContentsSchema = Schema({
     content:{
         content_type: String
     },
+    stage_type: String,
     keywords: Array,
     image:String
 });

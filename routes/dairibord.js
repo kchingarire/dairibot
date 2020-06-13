@@ -148,6 +148,14 @@ router.post('/', function (req, res) {
             return false;
         }
     }
+
+    function isOrdering(stage){
+        if (stage.stage_type === 'ordering'){
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     const  analyseResponse = async function(message, func){
         // get last stage
@@ -186,6 +194,9 @@ router.post('/', function (req, res) {
         } else if (isLoggingComplaint(stage) == true){
             console.log("Logging complaint");
              processComplaint(message,stage);
+        } else if (isOrdering(stage) == true){
+            console.log("Processing Orders");
+            processOrders(message,stage);
         }
         else {
             var opt = await isMenuOption(stage,message);
@@ -378,6 +389,35 @@ router.post('/', function (req, res) {
              
         }   
     }
+
+    const  processOrders=async function(message, stage){
+        // console.log("processing Complaint",message);
+        if (message.body){
+            saveOrder(message);
+            //0. Check if the complaint is being concluded
+            if (isResponseNegative(message) == true){
+                //Send concluding msg
+                txt = 'Thank you for shopping with us';
+                m={"msg":txt,
+                "img":"",
+                "stage_type": 'menu',
+                "stage": 'A',
+                "stageDetails": []};
+                // sendMessage(message,m);
+                //1. forward msg to agent
+                await forwardOrders(message,m);
+            } else {
+                txt = "Thank you. Your order has been forwaded to the rightful person who will get in touch with you promptly.\n Is there anything else that you want to add?";
+                m={"msg":txt,
+                "img":"",
+                "stage_type": stage.stage_type,
+                "stage": stage.stage,
+                "stageDetails": []};
+                sendMessage(message,m);
+            }
+             
+        }   
+    }
     
     const  saveComplaint = async function(message){
         //check if person is in DB and store if not
@@ -446,6 +486,80 @@ router.post('/', function (req, res) {
                     }
                 });
                 markComplaintsAsForwarded(contact.phoneNumber);
+            }
+        }
+        console.log(mesgs);
+        if (mesgs.length>0) newMessageList = newMessageList.concat(mesgs);
+        sendMessage(message,newMessageList);   
+    }
+
+    const  saveOrder = async function(message){
+        //check if person is in DB and store if not
+        data =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
+        
+        if (data){
+            neworder = { 
+                messageId: message.id,
+                text: message.body
+            };
+            if (data.orders){
+                data.orders.push(neworder);
+            } else {
+                data.orders = [neworder];
+            }
+            Contacts.updateOne({_id:data._id},
+                {
+                        orders : data.orders
+                }, function (err,data){
+                    if (err) console.log('Contact not updated',err)
+                });     
+            return;
+        } else { // insert new contact
+            //console.log('Saving contact');
+            contact = new Contacts({'phoneNumber':getPhoneNumber(message), 'name': name, 'senderName': message.senderName});
+            contact.save();
+            return;         
+        }
+    }
+    
+    const  forwardOrders = async function(message,m){
+        //check if person is in DB and store if not
+        var newMessageList = [m];
+        contact =  await Contacts.findOne({'phoneNumber':getPhoneNumber(message)});
+        agents = await Agents.find();
+         //formaat the message
+         var name = await getContactName(message);
+         var phone = getPhoneNumber(message);
+         subject = '*Order via Dairibord Chatbot*';
+         html = '<p><strong>Order From: </strong>' + name + '</p>';
+         html += '<p><strong>Phone Number: </strong>' + phone + '</p>';
+         html = '<p>' + message.body + '</p>';
+         txt = '*Order From:* ' + name + '\n';
+         txt += '*Phone Number:* ' + phone + '\n';
+         //txt =  message.body + '\n';
+         mesgs = [] 
+        if ((contact)&&(agents)){
+            if (contact.orders){ 
+                agents.forEach((agent)=>{
+                    if (agent.chatId){
+                        console.log(agent);
+                        mesgs.push({
+                            "chatId": agent.chatId,
+                            "text": txt
+                        });
+                        contact.orders.forEach((c)=>{
+                            if (!c.forwarded){
+                                mesgs.push({
+                                    "chatId": agent.chatId,
+                                    "text": c.text,
+                                    "forwarded":true,
+                                    "messageId":c.messageId
+                                });
+                            }
+                        });
+                    }
+                });
+                markOrdersAsForwarded(contact.phoneNumber);
             }
         }
         console.log(mesgs);
@@ -610,6 +724,26 @@ router.post('/', function (req, res) {
         } 
     };
 
+    const markOrdersAsForwarded = async function(phoneNumber){
+        //check if person is in DB and store if not
+        data =  await Contacts.findOne({'phoneNumber':phoneNumber});
+        
+        if (data){
+            newOrders = [];
+            data.orders.forEach((c)=>{
+                c.forwarded = true;
+                newOrders.push(c);
+            });
+            Contacts.updateOne({_id:data._id},
+                {
+                        orders: newOrders,
+                }, function (err,data){
+                    if (err) console.log('Contact not updated',err)
+                });     
+            return;
+        } 
+    };
+
 
     
     function dbtest(){
@@ -645,8 +779,8 @@ router.post('/', function (req, res) {
                    txt += '\n' + menuItem.option + '. ' + menuItem.itemName;
                    stageDetails.push({option: menuItem.option, title: menuItem.itemName});
                 //    console.log("menuItem",menuItem);
-                   if (menuItem.complaint){
-                       stage_type = 'complaint';
+                   if (menuItem.stage_type){
+                       stage_type = menuItem.stage_type;
                    }
                     //console.log(txt);
                });

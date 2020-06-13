@@ -10,6 +10,7 @@ const MenuSchema = mongoose.Schema({
     itemName:{
         type: String
     },
+    stage_type: String,
     parent:{
         type: String
     },

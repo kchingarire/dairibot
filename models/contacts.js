@@ -25,6 +25,17 @@ const ContactsSchema = Schema({
             required:true
         },
       }
+    ],
+    orders : [ {
+        messageId : String,
+        text: String,
+        forwarded: Boolean,
+        created:{
+            type:Date,
+            default:Date.now,
+            required:true
+        },
+      }
     ]
 
 });
