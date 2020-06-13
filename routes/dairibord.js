@@ -798,6 +798,7 @@ router.post('/', function (req, res) {
     }
     
     const sendMessage = async function(originalMessage,msg) {
+        console.log(msg);
         if (Array.isArray(msg)){
             mesgs = msg;
         }else{
@@ -842,7 +843,7 @@ router.post('/', function (req, res) {
                     "file": image.base64
                 }]
             }
-            if (files.length>=0){
+            if (files.length>0){
                 newMsg.files = files;
             }
             responseMesgs.push(newMsg); 
