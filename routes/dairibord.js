@@ -179,6 +179,7 @@ router.post('/', function (req, res) {
         if ((isGreeting(message.body) == true)) {
             var m = await getMenuText('A',message);
             sendMessage(message, m);
+            return;
         } else if (isBackButton(message) == true){
             console.log('BACK');
             var newStage = await getPreviousStage(message);
@@ -186,11 +187,13 @@ router.post('/', function (req, res) {
             if (typeof(newStage === 'object')){
                 var m = await getStageText(newStage, message);
                 sendMessage(message,m);
+                return;
             } else {
                 var m = await getMenuText('A',message);
                 sendMessage(message, m);
+                return;
             }
-            checkMyResponse(m);
+            // checkMyResponse(m);
         } else if (isLoggingComplaint(stage) == true){
             console.log("Logging complaint");
              processComplaint(message,stage);
@@ -207,7 +210,7 @@ router.post('/', function (req, res) {
                 console.log('Next Stage:' +newStage);
                 var m = await getMenuText(newStage,message);
                 sendMessage(message,m);
-                checkMyResponse(m);
+                // checkMyResponse(m);
             } else if (opt == 0) { // implies that the option is NOT available on the list of presented menu options
                 //check if it's a content option
                 var msg = '';
@@ -218,7 +221,7 @@ router.post('/', function (req, res) {
                             "stage_type": stage.stage_type,
                             "stageDetails": []};
                    sendMessage(message, m);
-                   checkMyResponse(msg);
+                //    checkMyResponse(msg);
                 }
                 if (msg =='') {
                     //else, present first menu
@@ -236,14 +239,14 @@ router.post('/', function (req, res) {
                             "stageDetails": []};
                 console.log(m);
                 sendMessage(message,m);
-                checkMyResponse(m);
+                // checkMyResponse(m);
                 if (m.msg === '') {
                 // 2. search for the response in the content
                     console.log(" 2. search for the response in the content");
                     var m = await getContentFromText(stage,message);
                     if ( m.msg != '') {
                         sendMessage(message, m);
-                        checkMyResponse(m);
+                        // checkMyResponse(m);
                     } else {
                         //invalid response therefore, present first menu
                         console.log("invalid response therefore, present first menu");
@@ -255,17 +258,17 @@ router.post('/', function (req, res) {
         }   
     }
     
-    const checkMyResponse = async function(msg){
-        var txt = msg.msg;
-        if (typeof(txt)==='string'){
-            if (txt){
-                if (txt.indexOf('Still getting data on this') > 0) {
-                    var msg = await getMenuText('A',message);
-                    sendMessage(message, msg);         
-                }
-            }
-        }
-    }
+    // const checkMyResponse = async function(msg){
+    //     var txt = msg.msg;
+    //     if (typeof(txt)==='string'){
+    //         if (txt){
+    //             if (txt.indexOf('Still getting data on this') > 0) {
+    //                 var msg = await getMenuText('A',message);
+    //                 sendMessage(message, msg);         
+    //             }
+    //         }
+    //     }
+    // }
     
     function isGreeting(txt){
         //remove special characters
@@ -992,7 +995,16 @@ router.post('/', function (req, res) {
                     msg = msg.msg;
                 }
             }
+            txt = msg.msg;
             mesgs = [msg];
+            if (typeof(txt)==='string'){
+                if (txt){
+                    if (txt.indexOf('Still getting data on this') > 0) {
+                        var msg2 = await getMenuText('A',originalMessage);  
+                        mesgs.push(msg2);             
+                    }
+                }
+            }
             stage_type = msg.stage_type;
             stageDetails = msg.stateDetails;
             stage = msg.stage;
