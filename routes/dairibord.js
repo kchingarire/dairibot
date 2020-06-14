@@ -345,7 +345,7 @@ router.post('/', function (req, res) {
     const getStageText = async function(stage, message){
         console.log("getStageText");
         var msg = '';
-        if (stage.details){
+        if (stage.details && (stage.details.length>0)){
             stage.details.forEach((d)=>{
                 msg += d.option + '. ' + d.title + '\n'
             })
@@ -357,11 +357,13 @@ router.post('/', function (req, res) {
                 "stage": stage.stage,
                 "stageDetails": stage.details};
             return m;
-        } else if (typeof(stage) === 'string'){
-            return await getMenuText('A',message);
         } else if (isLoggingComplaint(stage)) {
             return await processComplaint(message, stage);
-        }    
+        }else if (isOrdering(stage)) {
+            return await processOrders(message, stage);
+        } else {
+            return await getMenuText('A',message);
+        } 
     }
     
     const  processComplaint=async function(message, stage){
