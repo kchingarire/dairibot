@@ -1213,6 +1213,7 @@ router.post('/', function (req, res) {
             );
             if (!message.fromMe) {
                 //1. Check if first message
+                message.text = message.body;
                 analyseResponse(message); 
             }
         });
