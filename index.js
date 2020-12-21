@@ -9,7 +9,7 @@ var images     = require('./images');
 // Hello World
 const app = express()
 const Dairibord = require('./routes/dairibord');
-const port = 5388
+const port = 5334
 
 
 
