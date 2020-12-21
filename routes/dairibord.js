@@ -1218,7 +1218,7 @@ router.post('/', function (req, res) {
             }
         });
     }
-    res.send('ok');
+
 
 
 });
