@@ -6,7 +6,7 @@ var session = require('express-session');
 // load in JSON from a file named data.json
 var images     = require('./images');
 
-
+// Hello World
 const app = express()
 const Dairibord = require('./routes/dairibord');
 const port = 5388
@@ -14,7 +14,7 @@ const port = 5388
 
 
 
-mongoose.connect('mongodb://10.249.249.23/dairibot');
+mongoose.connect('mongodb://localhost/dairibot');
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
