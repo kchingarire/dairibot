@@ -1201,7 +1201,10 @@ router.post('/', function (req, res) {
     // console.log(data);
     //for (var i = 0; i < data.messages.length; i++) { // For each message
     var time = new Date().getTime() / 1000;
-    if (data.messages) {
+    var message = data.messages[0];
+    var text = message.body.toUpperCase();
+     console.log(message);
+    if (message.fromMe == false){
         data.messages.forEach((message)=>{
             //console.log('Incoming message From:'+ message.author+' >>'+messag>
             Messages.create(message, function (err, data){
