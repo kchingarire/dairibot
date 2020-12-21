@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 var request = require('request');
-var url1 = 'https//localhost:3000';
-var url2 = 'https://localhost:3000';
+var url1 = 'https://eu137.chat-api.com/instance208379/sendFile?token=fc4uvxhqwxb5ofke';
+var url2 = 'https://eu137.chat-api.com/instance208379/sendFile?token=fc4uvxhqwxb5ofke';
 
 var appPhoneNumber = '263788108777@c.us';
 var system = 'status@broadcast';
